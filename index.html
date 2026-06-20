@@ -10,16 +10,18 @@
         header { text-align: center; margin-bottom: 40px; margin-top: 20px; }
         header h1 { font-size: 3rem; color: #ff5000; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
         header p { color: #a4a4a8; margin-top: 5px; font-size: 1.1rem; }
-        .container { max-width: 1000px; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 10px; }
-        .card { background-color: #1a1a1e; border-radius: 12px; overflow: hidden; border: 1px solid #2c2c35; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
+        .container { max-width: 1000px; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 10px; justify-items: center; }
+        .card { background-color: #1a1a1e; border-radius: 12px; overflow: hidden; border: 1px solid #2c2c35; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; justify-content: space-between; width: 100%; max-width: 320px; }
         .card:hover { transform: translateY(-5px); border-color: #ff5000; }
         .card img { width: 100%; height: 250px; object-fit: cover; cursor: pointer; }
         .card-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: #ffffff; }
-        .price-tag { font-size: 1.3rem; color: #ff5000; font-weight: bold; margin-bottom: 15px; }
+        .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: #ffffff; line-height: 1.4; }
+        .price-tag { font-size: 1.4rem; color: #ff5000; font-weight: bold; margin-bottom: 5px; }
+        .product-code { font-size: 0.95rem; color: #a4a4a8; margin-bottom: 15px; background: #25252b; padding: 5px 10px; border-radius: 6px; display: inline-block; border: 1px dashed #444; }
+        .product-code strong { color: #fff; }
         .btn-buy { display: block; text-align: center; background-color: #ff5000; color: white; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; transition: background 0.2s; }
         .btn-buy:hover { background-color: #e04500; }
-        .ad-banner { width: 100%; max-width: 728px; background: #1a1a1e; border: 1px dashed #444; text-align: center; padding: 20px; margin-bottom: 30px; border-radius: 8px; }
+        .ad-box { width: 300px; height: 250px; background: #1a1a1e; border: 1px dashed #444; display: flex; justify-content: center; align-items: center; border-radius: 12px; overflow: hidden; }
     </style>
 </head>
 <body>
@@ -29,25 +31,50 @@
         <p>Најдобрите буџетски пронајдоци, автоделови и геџети на едно место</p>
     </header>
 
-    <!-- ТУКА ПОСЛЕ ЌЕ СТАВИШ ADSTERRA БАНЕР -->
-    <div class="ad-banner">
-        <p style="color: #666;">[Тука пастирај го Adsterra банерот за заработка]</p>
-    </div>
-
     <div class="container">
 
-        <!-- ПРОИЗВОД 1: БРИСАЧИ -->
+        <!-- ПРОИЗВОД 1: СЕТ АЛАТКИ -->
         <div class="card">
-            <a href="https://temu.to/k/e6sxnsi526h" target="_blank">
-                <img src="https://img.temu.com/hdimg/s/k/afc_share_goods/649e39485b0d0be087612f0df7bc5e24.jpg" alt="Брисачи за Citroen C4">
+            <a href="https://share.temu.com/mix9AXO3jTB" target="_blank">
+                <img src="https://img.kwcdn.com/product/aisc_image/algo/opt/0d3d6ef9/60588b8c/9d309c336ba54b09bb5453b5ef8a0295-goods.jpeg" alt="Мултифункционален сет шрафцигери">
+            </a>
+            <div class="card-content">
+                <div class="card-title">Мултифункционален сет прецизни шрафцигери за дигитални уреди и поправки</div>
+                <div>
+                    <div class="price-tag">223 ден.</div>
+                    <div class="product-code">Код за пребарување: <strong>9KM135GXK4</strong></div>
+                    <a href="https://share.temu.com/mix9AXO3jTB" target="_blank" class="btn-buy">Види Попуст на Temu</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПРОИЗВОД 2: БРИСАЧИ ЗА CITROEN C4 (Стави го точниот линк до сликата во src ако ја прикачи на GitHub) -->
+        <div class="card">
+            <a href="ТУКА_СТАВИ_ТВОЈ_TEMU_AFFILIATE_ЛИНК_ЗА_БРИСАЧИТЕ" target="_blank">
+                <img src="brisaci.jpg" alt="Автомобилски брисачи за Citroen C4">
             </a>
             <div class="card-content">
                 <div class="card-title">Автомобилски брисачи за Citroen C4 MK1 (2 парчиња)</div>
                 <div>
                     <div class="price-tag">422 ден.</div>
-                    <a href="https://temu.to/k/e6sxnsi526h" target="_blank" class="btn-buy">Види Попуст на Temu</a>
+                    <div class="product-code">Код за пребарување: <strong>605859174309634</strong></div>
+                    <a href="ТУКА_СТАВИ_ТВОЈ_TEMU_AFFILIATE_ЛИНК_ЗА_БРИСАЧИТЕ" target="_blank" class="btn-buy">Види Попуст на Temu</a>
                 </div>
             </div>
+        </div>
+
+        <!-- ТВОЈОТ ADSTERRA БАНЕР (300x250) -->
+        <div class="ad-box">
+            <script>
+                atOptions = {
+                    'key' : '77e0321e20f155e33fae6f46d18e6517',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/77e0321e20f155e33fae6f46d18e6517/invoke.js"></script>
         </div>
 
     </div>
