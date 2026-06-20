@@ -3,78 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexis Market | Топ Зделки & Алатки</title>
+    <title>Nexis Market | Најдобрите Буџетски Зделки</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #121214; color: #ffffff; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        header { text-align: center; margin-bottom: 40px; margin-top: 20px; }
-        header h1 { font-size: 3rem; color: #ff5000; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
-        header p { color: #a4a4a8; margin-top: 5px; font-size: 1.1rem; }
-        .container { max-width: 1000px; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 10px; justify-items: center; }
-        .card { background-color: #1a1a1e; border-radius: 12px; overflow: hidden; border: 1px solid #2c2c35; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; justify-content: space-between; width: 100%; max-width: 320px; }
-        .card:hover { transform: translateY(-5px); border-color: #ff5000; }
-        .card img { width: 100%; height: 250px; object-fit: cover; cursor: pointer; }
-        .card-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: #ffffff; line-height: 1.4; }
-        .price-tag { font-size: 1.4rem; color: #ff5000; font-weight: bold; margin-bottom: 5px; }
-        .product-code { font-size: 0.95rem; color: #a4a4a8; margin-bottom: 15px; background: #25252b; padding: 5px 10px; border-radius: 6px; display: inline-block; border: 1px dashed #444; }
-        .product-code strong { color: #fff; }
-        .btn-buy { display: block; text-align: center; background-color: #ff5000; color: white; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; transition: background 0.2s; }
-        .btn-buy:hover { background-color: #e04500; }
-        .ad-box { width: 300px; height: 250px; background: #1a1a1e; border: 1px dashed #444; display: flex; justify-content: center; align-items: center; border-radius: 12px; overflow: hidden; }
+        
+        /* Главна мрежа според скицата (Лево Реклама - Средина Содржина - Десно Реклама) */
+        .page-layout { display: grid; grid-template-columns: 160px 1fr 160px; max-width: 1300px; width: 100%; gap: 20px; margin-top: 20px; }
+        
+        /* Странични реклами (Vertical Skyscraper) */
+        .side-ad { width: 160px; min-height: 600px; background-color: #1a1a1e; border: 1px dashed #444; border-radius: 8px; display: flex; justify-content: center; padding-top: 20px; }
+        .side-ad-title { color: #a4a4a8; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; writing-mode: vertical-rl; text-orientation: mixed; margin-bottom: 10px; align-self: center; }
+
+        /* Централен контејнер */
+        .main-content { display: flex; flex-direction: column; gap: 25px; }
+
+        /* Хедер Секција (Лого - Текст - QR Код) */
+        header { display: flex; justify-content: space-between; align-items: center; background-color: #1a1a1e; padding: 20px; border-radius: 12px; border: 1px solid #2c2c35; }
+        .logo-placeholder { width: 70px; height: 70px; background-color: #ff5000; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; font-weight: bold; color: white; }
+        .header-text { text-align: center; flex-grow: 1; padding: 0 20px; }
+        .header-text h1 { font-size: 2.5rem; color: #ff5000; font-weight: bold; letter-spacing: 2px; }
+        .header-text p { color: #a4a4a8; margin-top: 5px; font-size: 1rem; }
+        .qr-placeholder { width: 90px; height: 90px; background-color: #fff; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5px; cursor: pointer; }
+        .qr-box { width: 100%; height: 100%; border: 2px dashed #121214; display: flex; justify-content: center; align-items: center; color: #121214; font-size: 0.7rem; font-weight: bold; text-align: center; }
+
+        /* Секција за Хоризонтален Банер под Хедерот */
+        .top-banner-space { width: 100%; background-color: #1a1a1e; border: 1px dashed #444; border-radius: 12px; padding: 15px; text-align: center; color: #a4a4a8; font-size: 0.9rem; }
+
+        /* Картички за Производи и Промоции */
+        .promo-card { background-color: #1a1a1e; border-radius: 12px; border: 1px solid #2c2c35; overflow: hidden; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; }
+        .promo-card:hover { transform: translateY(-3px); border-color: #ff5000; }
+        .promo-body { padding: 25px; display: flex; flex-direction: column; gap: 15px; }
+        
+        .badge-30 { background-color: #de2d2d; color: white; padding: 5px 12px; font-weight: bold; border-radius: 6px; align-self: flex-start; text-transform: uppercase; font-size: 0.85rem; }
+        .badge-hot { background-color: #ff5000; color: white; padding: 5px 12px; font-weight: bold; border-radius: 6px; align-self: flex-start; text-transform: uppercase; font-size: 0.85rem; }
+        .badge-coupon { background-color: #2da1de; color: white; padding: 5px 12px; font-weight: bold; border-radius: 6px; align-self: flex-start; text-transform: uppercase; font-size: 0.85rem; }
+
+        .promo-title { font-size: 1.6rem; font-weight: bold; color: #ffffff; }
+        .promo-desc { color: #a4a4a8; font-size: 1.05rem; line-height: 1.5; }
+        
+        .btn-temu { display: block; text-align: center; background-color: #ff5000; color: white; text-decoration: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; transition: background 0.2s; margin-top: 10px; }
+        .btn-temu:hover { background-color: #e04500; }
+
+        /* Купон Секција Специјален Стил */
+        .coupon-box { border: 2px dashed #2da1de; background: linear-gradient(135deg, #1a1a1e 0%, #17222a 100%); }
+        .coupon-amount { font-size: 2.2rem; color: #2da1de; font-weight: bold; margin-bottom: 5px; }
+
+        /* Респонзивност за мобилни уреди */
+        @media (max-width: 900px) {
+            .page-layout { grid-template-columns: 1fr; }
+            .side-ad { display: none; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>NEXIS MARKET</h1>
-        <p>Најдобрите буџетски пронајдоци, автоделови и геџети на едно место</p>
-    </header>
+    <div class="page-layout">
 
-    <div class="container">
-
-        <!-- ПРОИЗВОД 1: СЕТ АЛАТКИ -->
-        <div class="card">
-            <a href="https://share.temu.com/mix9AXO3jTB" target="_blank">
-                <img src="https://img.kwcdn.com/product/aisc_image/algo/opt/0d3d6ef9/60588b8c/9d309c336ba54b09bb5453b5ef8a0295-goods.jpeg" alt="Мултифункционален сет шрафцигери">
-            </a>
-            <div class="card-content">
-                <div class="card-title">Мултифункционален сет прецизни шрафцигери за дигитални уреди и поправки</div>
-                <div>
-                    <div class="price-tag">223 ден.</div>
-                    <div class="product-code">Код за пребарување: <strong>9KM135GXK4</strong></div>
-                    <a href="https://share.temu.com/mix9AXO3jTB" target="_blank" class="btn-buy">Види Попуст на Temu</a>
-                </div>
-            </div>
+        <!-- ЛЕВА РЕКЛАМА (Пастирај 160x600 Adsterra код тука) -->
+        <div class="side-ad">
+            <div class="side-ad-title">РЕКЛАМА</div>
+            <!-- ТУКА СТАВИ ЛЕВА РЕКЛАМА ОД ADSTERRA -->
         </div>
 
-        <!-- ПРОИЗВОД 2: БРИСАЧИ ЗА CITROEN C4 (Стави го точниот линк до сликата во src ако ја прикачи на GitHub) -->
-        <div class="card">
-            <a href="ТУКА_СТАВИ_ТВОЈ_TEMU_AFFILIATE_ЛИНК_ЗА_БРИСАЧИТЕ" target="_blank">
-                <img src="brisaci.jpg" alt="Автомобилски брисачи за Citroen C4">
-            </a>
-            <div class="card-content">
-                <div class="card-title">Автомобилски брисачи за Citroen C4 MK1 (2 парчиња)</div>
-                <div>
-                    <div class="price-tag">422 ден.</div>
-                    <div class="product-code">Код за пребарување: <strong>605859174309634</strong></div>
-                    <a href="ТУКА_СТАВИ_ТВОЈ_TEMU_AFFILIATE_ЛИНК_ЗА_БРИСАЧИТЕ" target="_blank" class="btn-buy">Види Попуст на Temu</a>
+        <!-- ЦЕНТРАЛЕН ДЕЛ СО ТВОИТЕ ПРОМОЦИИ -->
+        <div class="main-content">
+            
+            <!-- ХЕДЕР (ЛОГО, НАСЛОВ, QR КОД) -->
+            <header>
+                <div class="logo-placeholder">N</div>
+                <div class="header-text">
+                    <h1>NEXIS MARKET</h1>
+                    <p>Најдобрите буџетски пронајдоци, автоделови и геџети на едно место</p>
+                </div>
+                <div class="qr-placeholder" title="Скенирај со телефон">
+                    <div class="qr-box">QR<br>КОД</div>
+                </div>
+            </header>
+
+            <!-- ГОРЕН ХОРИЗОНТАЛЕН БАНЕР (Твојот 300x250 или уште подобро некој нов 728x90) -->
+            <div class="top-banner-space">
+                <p>[Тука пастирај го Adsterra банерот за заработка]</p>
+                <!-- Ако сакаш, тука можеш да го пастираш твојот 300x250 банер што ми го прати претходно -->
+            </div>
+
+            <!-- 1. ПРОИЗВОД СО 30% ПОПУСТ -->
+            <div class="promo-card">
+                <div class="promo-body">
+                    <span class="badge-30">Ексклузивни 30% Попуст</span>
+                    <h2 class="promo-title">Специјална Селекција на Производи со 30% Намалување</h2>
+                    <p class="promo-desc">Искористете ја оваа ограничена промоција за дополнителен попуст на најбараните артикли директно преку инфлуенсерската програма.</p>
+                    <a href="https://temu.to/k/e9hi8f5cd44" target="_blank" class="btn-temu">Види Попуст на Temu</a>
                 </div>
             </div>
+
+            <!-- 2. ПРОИЗВОДИ СО ГОЛЕМ ПОПУСТ -->
+            <div class="promo-card">
+                <div class="promo-body">
+                    <span class="badge-hot">Супер Зделка</span>
+                    <h2 class="promo-title">Главен Каталог: Производи со Голем Попуст</h2>
+                    <p class="promo-desc">Листа на топ буџетски пронајдоци, алатки и автоделови со максимално намалување на цените. Залихите се ограничени!</p>
+                    <a href="https://temu.to/k/erouig5xth2" target="_blank" class="btn-temu">Види Попуст на Temu</a>
+                </div>
+            </div>
+
+            <!-- 3. КУПОН ОД 2000 ДЕНАРИ -->
+            <div class="promo-card coupon-box">
+                <div class="promo-body">
+                    <span class="badge-coupon">Пакет Купони</span>
+                    <div class="coupon-amount">2000 ДЕН.</div>
+                    <h2 class="promo-title">Преземи го Твојот Купон Пакет за Добредојде</h2>
+                    <p class="promo-desc">Кликни на копчето подолу за веднаш да го активираш и зачуваш пакетот купони од 2000 денари во твојот Temu профил. Важи за нови и постоечки корисници под одредени услови.</p>
+                    <a href="https://temu.to/k/evn2o6ohc6a" target="_blank" class="btn-temu" style="background-color: #2da1de;">Активирај Купон на Temu</a>
+                </div>
+            </div>
+
         </div>
 
-        <!-- ТВОЈОТ ADSTERRA БАНЕР (300x250) -->
-        <div class="ad-box">
-            <script>
-                atOptions = {
-                    'key' : '77e0321e20f155e33fae6f46d18e6517',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script src="https://www.highperformanceformat.com/77e0321e20f155e33fae6f46d18e6517/invoke.js"></script>
+        <!-- ДЕСНА РЕКЛАМА (Пастирај 160x600 Adsterra код тука) -->
+        <div class="side-ad">
+            <div class="side-ad-title">РЕКЛАМА</div>
+            <!-- ТУКА СТАВИ ДЕСНА РЕКЛАМА ОД ADSTERRA -->
         </div>
 
     </div>
