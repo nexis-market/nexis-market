@@ -11,9 +11,9 @@
         /* Главна мрежа (Лево Реклама - Средина Содржина - Десно Реклама) */
         .page-layout { display: grid; grid-template-columns: 160px 1fr 160px; max-width: 1300px; width: 100%; gap: 20px; margin-top: 20px; }
         
-        /* Странични реклами */
-        .side-ad { width: 160px; min-height: 300px; background-color: #1a1a1e; border: 1px dashed #444; border-radius: 8px; display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
-        .side-ad-title { color: #a4a4a8; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; font-weight: bold; }
+        /* Странични реклами со повеќе банери нанижани до долу */
+        .side-ad { width: 160px; display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        .side-ad-title { color: #a4a4a8; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; text-align: center; margin-bottom: 5px; }
 
         /* Централен контејнер */
         .main-content { display: flex; flex-direction: column; gap: 25px; }
@@ -27,8 +27,8 @@
         .qr-placeholder { width: 90px; height: 90px; background-color: #fff; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5px; cursor: pointer; }
         .qr-box { width: 100%; height: 100%; border: 2px dashed #121214; display: flex; justify-content: center; align-items: center; color: #121214; font-size: 0.7rem; font-weight: bold; text-align: center; }
 
-        /* Секција за Хоризонтален Банер под Хедерот */
-        .top-banner-space { width: 100%; background-color: #1a1a1e; border: 1px dashed #444; border-radius: 12px; padding: 15px; text-align: center; color: #a4a4a8; font-size: 0.9rem; }
+        /* Секција за Новиот Хоризонтален Банер 728x90 во средина */
+        .top-banner-space { width: 100%; display: flex; justify-content: center; align-items: center; background-color: #1a1a1e; border: 1px solid #2c2c35; border-radius: 12px; padding: 15px; min-height: 120px; }
 
         /* Картички за Производи и Промоции */
         .promo-card { background-color: #1a1a1e; border-radius: 12px; border: 1px solid #2c2c35; overflow: hidden; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; }
@@ -61,17 +61,19 @@
 
     <div class="page-layout">
 
-        <!-- ЛЕВА РЕКЛАМА (160x300) -->
+        <!-- ЛЕВА СТРАНА: РЕКЛАМИ НАНИЖАНИ ДО ДОЛУ -->
         <div class="side-ad">
             <div class="side-ad-title">РЕКЛАМА</div>
+            
+            <!-- Банер 1 (160x300) -->
             <script>
-                atOptions = {
-                    'key' : '50c36c4341c67f6776a26a78b0d38a5a',
-                    'format' : 'iframe',
-                    'height' : 300,
-                    'width' : 160,
-                    'params' : {}
-                };
+                atOptions = { 'key' : '50c36c4341c67f6776a26a78b0d38a5a', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
+            </script>
+            <script src="https://www.highperformanceformat.com/50c36c4341c67f6776a26a78b0d38a5a/invoke.js"></script>
+
+            <!-- Банер 2 (160x300) пополнува подолу -->
+            <script>
+                atOptions = { 'key' : '50c36c4341c67f6776a26a78b0d38a5a', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
             </script>
             <script src="https://www.highperformanceformat.com/50c36c4341c67f6776a26a78b0d38a5a/invoke.js"></script>
         </div>
@@ -91,18 +93,18 @@
                 </div>
             </header>
 
-            <!-- ГОРЕН ХОРИЗОНТАЛЕН БАНЕР (Твојот стар 300x250 банер) -->
+            <!-- ГОРЕН ХОРИЗОНТАЛЕН БАНЕР НА СРЕДИНА (Нов 728x90) -->
             <div class="top-banner-space">
                 <script>
                     atOptions = {
-                        'key' : '77e0321e20f155e33fae6f46d18e6517',
+                        'key' : 'cee42c9999fb1c02da45ee203be8d7da',
                         'format' : 'iframe',
-                        'height' : 250,
-                        'width' : 300,
+                        'height' : 90,
+                        'width' : 728,
                         'params' : {}
                     };
                 </script>
-                <script src="https://www.highperformanceformat.com/77e0321e20f155e33fae6f46d18e6517/invoke.js"></script>
+                <script src="https://www.highperformanceformat.com/cee42c9999fb1c02da45ee203be8d7da/invoke.js"></script>
             </div>
 
             <!-- 1. ПРОИЗВОД СО 30% ПОПУСТ -->
@@ -138,17 +140,19 @@
 
         </div>
 
-        <!-- ДЕСНА РЕКЛАМА (160x300) -->
+        <!-- ДЕСНА СТРАНА: РЕКЛАМИ НАНИЖАНИ ДО ДОЛУ -->
         <div class="side-ad">
             <div class="side-ad-title">РЕКЛАМА</div>
+            
+            <!-- Банер 1 (160x300) -->
             <script>
-                atOptions = {
-                    'key' : '50c36c4341c67f6776a26a78b0d38a5a',
-                    'format' : 'iframe',
-                    'height' : 300,
-                    'width' : 160,
-                    'params' : {}
-                };
+                atOptions = { 'key' : '50c36c4341c67f6776a26a78b0d38a5a', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
+            </script>
+            <script src="https://www.highperformanceformat.com/50c36c4341c67f6776a26a78b0d38a5a/invoke.js"></script>
+
+            <!-- Банер 2 (160x300) пополнува подолу -->
+            <script>
+                atOptions = { 'key' : '50c36c4341c67f6776a26a78b0d38a5a', 'format' : 'iframe', 'height' : 300, 'width' : 160, 'params' : {} };
             </script>
             <script src="https://www.highperformanceformat.com/50c36c4341c67f6776a26a78b0d38a5a/invoke.js"></script>
         </div>
