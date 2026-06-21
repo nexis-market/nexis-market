@@ -2,62 +2,54 @@
 <html lang="mk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avto Pazar | Nexis Market</title>
+    <title>AVTO PAZAR</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #121214; color: #ffffff; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        
-        .container { max-width: 1000px; width: 100%; }
-        header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #ff5000; padding-bottom: 20px; }
-        h1 { color: #ff5000; font-size: 2.5rem; }
-
-        /* Каталог мрежа */
-        .catalog { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        
-        .product-item { background: #1a1a1e; padding: 20px; border-radius: 12px; border: 1px solid #2c2c35; transition: 0.3s; }
-        .product-item:hover { border-color: #ff5000; }
-        .product-item img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; cursor: pointer; }
-        .product-item h3 { margin: 15px 0; }
-
-        /* Модален прозорец (Галерија) */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; overflow: auto; }
-        .modal-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; padding: 50px; }
-        .close { position: absolute; top: 20px; right: 30px; font-size: 50px; color: white; cursor: pointer; }
+        body { background-color: #121212; color: white; font-family: sans-serif; text-align: center; }
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 20px; 
+            padding: 20px; 
+            max-width: 1000px; 
+            margin: auto; 
+        }
+        .card { 
+            border: 2px solid #ff4500; 
+            padding: 15px; 
+            border-radius: 10px; 
+            background: #1e1e1e; 
+        }
+        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 5px; }
+        h1 { color: #ff4500; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>AVTO PAZAR</h1>
-        <p>Квалитетни автоделови од мојата гаража</p>
-        <a href="index.html" style="color: #ff5000; text-decoration: none; display: block; margin-top: 10px;">← Назад на Почетна</a>
-    </header>
+    <h1>AVTO PAZAR</h1>
+    <p>Квалитетни автоделови од мојата гаража</p>
+    <a href="index.html" style="color: #ff4500;">← Назад на Почетна</a>
 
-    <div class="catalog">
-        <!-- Вентилатор Производ -->
-        <div class="product-item">
-            <img src="59d94c4f-c3cb-4e3c-8caf-0be6f33aec4a.jpg" onclick="openModal('modal-ventilator')" alt="Вентилатор">
-            <h3>Вентилатор за Hyundai Santa Fe - 50 евра</h3>
+    <div class="grid-container">
+        <!-- Оглас 1 -->
+        <div class="card">
+            <img src="slika1.jpg" alt="Дел">
+            <h3>Вентилатор - Hyundai Santa Fe</h3>
+            <p>Цена: 50 евра</p>
         </div>
+        <!-- Оглас 2 -->
+        <div class="card">
+            <img src="slika2.jpg" alt="Дел">
+            <h3>Алтернатор - Опел Астра G</h3>
+            <p>Цена: 45 евра</p>
+        </div>
+        <!-- Оглас 3 -->
+        <div class="card">
+            <img src="slika3.jpg" alt="Дел">
+            <h3>Задна кочница - Голф 5</h3>
+            <p>Цена: 30 евра</p>
+        </div>
+        <!-- Можеш да додаваш уште вакви card блокови -->
     </div>
-</div>
-
-<!-- Модален прозорец -->
-<div id="modal-ventilator" class="modal">
-    <span class="close" onclick="closeModal('modal-ventilator')">&times;</span>
-    <div class="modal-content">
-        <img src="59d94c4f-c3cb-4e3c-8caf-0be6f33aec4a.jpg">
-        <img src="75b4523f-c12e-41ec-a206-0d0368b36666.jpg">
-        <!-- Овде додавај уште слики како овие две -->
-    </div>
-</div>
-
-<script>
-    function openModal(id) { document.getElementById(id).style.display = "block"; }
-    function closeModal(id) { document.getElementById(id).style.display = "none"; }
-</script>
 
 </body>
 </html>
