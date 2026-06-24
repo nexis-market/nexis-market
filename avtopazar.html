@@ -7,14 +7,22 @@
         body { background-color: #121212; color: white; font-family: Arial, sans-serif; padding: 20px; text-align: center; }
         h1 { color: #ff4500; }
         
-        /* Админ панел - скриен по дифолт */
         #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; border-radius: 10px; background: #1a1a1a; margin-bottom: 30px; }
         input { margin: 5px; padding: 10px; width: 220px; border-radius: 5px; border: none; }
         button { background:#ff4500; border:none; padding:10px 20px; color:white; cursor:pointer; font-weight:bold; border-radius: 5px; margin: 5px; }
         
-        /* Гриди за огласи */
         .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: auto; }
-        .card { border: 2px solid #ff4500; padding: 10px; border-radius: 10px; background: #1a1a1a; position: relative; }
+        
+        .card { 
+            border: 2px solid #ff4500; 
+            padding: 15px; 
+            border-radius: 10px; 
+            background: #1a1a1a; 
+            position: relative; 
+            word-wrap: break-word; /* Спречува развлекување */
+            overflow-wrap: break-word; /* Прекршува долг текст */
+        }
+        
         .card img { width: 100%; height: 250px; object-fit: cover; object-position: center; border-radius: 5px; margin-bottom: 10px; }
         .select-checkbox { position: absolute; top: 15px; right: 15px; transform: scale(1.5); }
     </style>
@@ -35,14 +43,13 @@
     <div class="grid-container" id="oglasi-lista"></div>
 
     <script>
-        // Тајна најава со кратенка Alt + Shift + A
+        // Кратенка: Ctrl + Enter
         document.addEventListener('keydown', function(event) {
-            if (event.altKey && event.shiftKey && event.key === 'A') {
+            if (event.ctrlKey && event.key === 'Enter') {
                 let email = prompt("Е-маил:");
                 let pass = prompt("Лозинка:");
                 if (email === "infodev976@gmail.com" && pass === "avtopazar55/") {
                     document.getElementById('admin-panel').style.display = "block";
-                    alert("Добредојде, Админ!");
                 } else { alert("Грешка!"); }
             }
         });
