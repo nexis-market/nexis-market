@@ -4,56 +4,87 @@
     <meta charset="UTF-8">
     <title>AVTO PAZAR</title>
     <style>
-        body { background-color: #121212; color: white; font-family: Arial; padding: 20px; text-align: center; }
-        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: auto; }
-        .card { border: 2px solid #ff4500; padding: 15px; border-radius: 10px; background: #1a1a1a; position: relative; }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
+        body { background-color: #121212; color: white; font-family: Arial, sans-serif; padding: 20px; text-align: center; }
+        h1 { color: #ff4500; }
         
-        /* Админ дел - скриен по дифолт */
-        #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; margin-bottom: 20px; }
-        .hidden-trigger { color: #333; cursor: pointer; margin-top: 50px; }
+        /* Админ панел - скриен по дифолт */
+        #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; border-radius: 10px; background: #1a1a1a; margin-bottom: 30px; }
+        input { margin: 5px; padding: 10px; width: 220px; border-radius: 5px; border: none; }
+        button { background:#ff4500; border:none; padding:10px 20px; color:white; cursor:pointer; font-weight:bold; border-radius: 5px; margin: 5px; }
+        
+        /* Гриди за огласи */
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: auto; }
+        .card { border: 2px solid #ff4500; padding: 10px; border-radius: 10px; background: #1a1a1a; position: relative; }
+        .card img { width: 100%; height: 250px; object-fit: cover; object-position: center; border-radius: 5px; margin-bottom: 10px; }
+        .select-checkbox { position: absolute; top: 15px; right: 15px; transform: scale(1.5); }
     </style>
 </head>
 <body>
 
     <h1>AVTO PAZAR</h1>
-    
+
     <div id="admin-panel">
-        <h3>АДМИН ПАНЕЛ</h3>
+        <h3>АДМИН - Додади оглас</h3>
         <input type="text" id="naslov" placeholder="Наслов">
         <input type="text" id="cena" placeholder="Цена">
         <input type="file" id="slikaFile" accept="image/*">
         <button onclick="dodadiOglas()">Додади</button>
-        <button onclick="brisiSelektirani()" style="background:red; color:white;">Избриши</button>
+        <button onclick="brisiSelektirani()" style="background:#8b0000;">Избриши селектирани</button>
     </div>
 
     <div class="grid-container" id="oglasi-lista"></div>
 
-    <p class="hidden-trigger" onclick="login()">Конфигурација</p>
-
     <script>
-        function login() {
-            let email = prompt("Внеси е-маил:");
-            let pass = prompt("Внеси лозинка:");
-            if (email === "infodev976@gmail.com" && pass === "avtopazar55/") {
-                document.getElementById('admin-panel').style.display = "block";
-                alert("Добредојде, Админ!");
-            } else {
-                alert("Погрешни податоци!");
+        // Тајна најава со кратенка Alt + Shift + A
+        document.addEventListener('keydown', function(event) {
+            if (event.altKey && event.shiftKey && event.key === 'A') {
+                let email = prompt("Е-маил:");
+                let pass = prompt("Лозинка:");
+                if (email === "infodev976@gmail.com" && pass === "avtopazar55/") {
+                    document.getElementById('admin-panel').style.display = "block";
+                    alert("Добредојде, Админ!");
+                } else { alert("Грешка!"); }
             }
-        }
+        });
 
-        // Функциите за додавање/бришење остануваат исти како досега
         function prikaziOglasi() {
             let oglasi = JSON.parse(localStorage.getItem('mojiOglasi')) || [];
             let container = document.getElementById('oglasi-lista');
             container.innerHTML = "";
             oglasi.forEach((o, index) => {
-                container.innerHTML += `<div class="card"><img src="${o.slika}"><h3>${o.naslov}</h3><p>${o.cena}</p></div>`;
+                container.innerHTML += `
+                    <div class="card">
+                        <input type="checkbox" class="select-checkbox" data-index="${index}">
+                        <img src="${o.slika}" alt="Слика">
+                        <h3>${o.naslov}</h3>
+                        <p>Цена: ${o.cena}</p>
+                    </div>`;
             });
         }
-        
-        // ... тука ги ставаш функциите dodadiOglas() и brisiSelektirani() ...
+
+        function dodadiOglas() {
+            const file = document.getElementById('slikaFile').files[0];
+            if (!file) return alert("Избери слика!");
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let novi = { naslov: document.getElementById('naslov').value, cena: document.getElementById('cena').value, slika: e.target.result };
+                let oglasi = JSON.parse(localStorage.getItem('mojiOglasi')) || [];
+                oglasi.push(novi);
+                localStorage.setItem('mojiOglasi', JSON.stringify(oglasi));
+                prikaziOglasi();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function brisiSelektirani() {
+            let checkboxes = document.querySelectorAll('.select-checkbox:checked');
+            let oglasi = JSON.parse(localStorage.getItem('mojiOglasi')) || [];
+            let indexi = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-index')));
+            indexi.sort((a,b) => b-a).forEach(i => oglasi.splice(i, 1));
+            localStorage.setItem('mojiOglasi', JSON.stringify(oglasi));
+            prikaziOglasi();
+        }
+
         prikaziOglasi();
     </script>
 </body>
