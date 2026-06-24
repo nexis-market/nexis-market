@@ -1,116 +1,41 @@
 <!DOCTYPE html>
 <html lang="mk">
 <head>
-    <meta charset="UTF-8">
-    <title>AVTO PAZAR</title>
     <style>
-        body { background-color: #121212; color: white; font-family: Arial, sans-serif; padding: 20px; text-align: center; }
-        h1 { color: #ff4500; }
-        
-        #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; border-radius: 10px; background: #1a1a1a; margin-bottom: 30px; }
-        input { margin: 5px; padding: 10px; width: 220px; border-radius: 5px; border: none; }
-        button { background:#ff4500; border:none; padding:10px 20px; color:white; cursor:pointer; font-weight:bold; border-radius: 5px; margin: 5px; }
-        
-        /* СРЕДЕН GRID */
-        .grid-container { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 20px; 
-            max-width: 1000px; 
-            margin: auto; 
-        }
-        
-        .card { 
-            border: 2px solid #ff4500; 
-            padding: 15px; 
-            border-radius: 10px; 
-            background: #1a1a1a; 
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow: hidden; /* Ова го сече секој текст што сака да излезе */
-        }
-        
-        .card img { width: 100%; height: 250px; object-fit: cover; border-radius: 5px; }
-        
-        /* КОНТЕЈНЕР ЗА ТЕКСТ - ОВДЕ Е МАГИЈАТА */
-        .text-box {
-            width: 100%;
-            margin-top: 10px;
-            word-wrap: break-word;   /* Прекршува долги зборови */
-            word-break: break-all;  /* Сигурно кршење */
-            text-align: center;
-        }
-
-        .select-checkbox { position: absolute; top: 15px; right: 15px; transform: scale(1.5); }
+        /* Lightbox стил - главниот интерфејс */
+        #product-view { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; padding: 50px; }
+        #main-img { width: 100%; height: 500px; object-fit: contain; margin-bottom: 20px; }
+        .thumb-bar { display: flex; gap: 10px; justify-content: center; }
+        .thumb { width: 80px; height: 80px; object-fit: cover; cursor: pointer; border: 2px solid #555; }
+        .thumb:hover { border-color: #ff4500; }
     </style>
 </head>
 <body>
 
-    <h1>AVTO PAZAR</h1>
-
-    <div id="admin-panel">
-        <h3>АДМИН - Додади оглас</h3>
-        <input type="text" id="naslov" placeholder="Наслов" maxlength="50"> <input type="text" id="cena" placeholder="Цена">
-        <input type="file" id="slikaFile" accept="image/*">
-        <button onclick="dodadiOglas()">Додади</button>
-        <button onclick="brisiSelektirani()" style="background:#8b0000;">Избриши</button>
+    <div id="product-view">
+        <button onclick="document.getElementById('product-view').style.display='none'" style="float:right">Затвори</button>
+        <img id="main-img" src="">
+        <div class="thumb-bar" id="thumbs"></div>
     </div>
 
-    <div class="grid-container" id="oglasi-lista"></div>
-
+    <input type="file" id="slikaFile" multiple accept="image/*">
+    
     <script>
-        document.addEventListener('keydown', function(event) {
-            if (event.ctrlKey && event.key === 'Enter') {
-                let email = prompt("Е-маил:");
-                let pass = prompt("Лозинка:");
-                if (email === "infodev976@gmail.com" && pass === "avtopazar55/") {
-                    document.getElementById('admin-panel').style.display = "block";
-                }
-            }
-        });
-
-        function prikaziOglasi() {
-            let oglasi = JSON.parse(localStorage.getItem('mojiOglasi')) || [];
-            let container = document.getElementById('oglasi-lista');
-            container.innerHTML = "";
-            oglasi.forEach((o, index) => {
-                container.innerHTML += `
-                    <div class="card">
-                        <input type="checkbox" class="select-checkbox" data-index="${index}">
-                        <img src="${o.slika}">
-                        <div class="text-box">
-                            <h3>${o.naslov}</h3>
-                            <p>Цена: ${o.cena}</p>
-                        </div>
-                    </div>`;
+        // Кога кликаш на огласот, ја повикуваш оваа функција:
+        function openAmazonView(images) {
+            document.getElementById('product-view').style.display = 'block';
+            document.getElementById('main-img').src = images[0]; // Првата е главна
+            
+            let thumbContainer = document.getElementById('thumbs');
+            thumbContainer.innerHTML = "";
+            images.forEach(imgSrc => {
+                let img = document.createElement('img');
+                img.src = imgSrc;
+                img.className = 'thumb';
+                img.onclick = () => document.getElementById('main-img').src = imgSrc;
+                thumbContainer.appendChild(img);
             });
         }
-
-        function dodadiOglas() {
-            const file = document.getElementById('slikaFile').files[0];
-            if (!file) return alert("Избери слика!");
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                let novi = { naslov: document.getElementById('naslov').value, cena: document.getElementById('cena').value, slika: e.target.result };
-                let oglasi = JSON.parse(localStorage.getItem('mojiOglasi')) || [];
-                oglasi.push(novi);
-                localStorage.setItem('mojiOglasi', JSON.stringify(oglasi));
-                prikaziOglasi();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function brisiSelektirani() {
-            let checkboxes = document.querySelectorAll('.select-checkbox:checked');
-            let oglasi = JSON.parse(localStorage.getItem('mojiOglasi')) || [];
-            let indexi = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-index')));
-            indexi.sort((a,b) => b-a).forEach(i => oglasi.splice(i, 1));
-            localStorage.setItem('mojiOglasi', JSON.stringify(oglasi));
-            prikaziOglasi();
-        }
-        prikaziOglasi();
     </script>
 </body>
 </html>
