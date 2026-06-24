@@ -11,19 +11,38 @@
         input { margin: 5px; padding: 10px; width: 220px; border-radius: 5px; border: none; }
         button { background:#ff4500; border:none; padding:10px 20px; color:white; cursor:pointer; font-weight:bold; border-radius: 5px; margin: 5px; }
         
-        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: auto; }
+        /* СРЕДЕН GRID */
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px; 
+            max-width: 1000px; 
+            margin: auto; 
+        }
         
         .card { 
             border: 2px solid #ff4500; 
             padding: 15px; 
             border-radius: 10px; 
             background: #1a1a1a; 
-            position: relative; 
-            word-wrap: break-word; /* Спречува развлекување */
-            overflow-wrap: break-word; /* Прекршува долг текст */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden; /* Ова го сече секој текст што сака да излезе */
         }
         
-        .card img { width: 100%; height: 250px; object-fit: cover; object-position: center; border-radius: 5px; margin-bottom: 10px; }
+        .card img { width: 100%; height: 250px; object-fit: cover; border-radius: 5px; }
+        
+        /* КОНТЕЈНЕР ЗА ТЕКСТ - ОВДЕ Е МАГИЈАТА */
+        .text-box {
+            width: 100%;
+            margin-top: 10px;
+            word-wrap: break-word;   /* Прекршува долги зборови */
+            word-break: break-all;  /* Сигурно кршење */
+            text-align: center;
+        }
+
         .select-checkbox { position: absolute; top: 15px; right: 15px; transform: scale(1.5); }
     </style>
 </head>
@@ -33,24 +52,22 @@
 
     <div id="admin-panel">
         <h3>АДМИН - Додади оглас</h3>
-        <input type="text" id="naslov" placeholder="Наслов">
-        <input type="text" id="cena" placeholder="Цена">
+        <input type="text" id="naslov" placeholder="Наслов" maxlength="50"> <input type="text" id="cena" placeholder="Цена">
         <input type="file" id="slikaFile" accept="image/*">
         <button onclick="dodadiOglas()">Додади</button>
-        <button onclick="brisiSelektirani()" style="background:#8b0000;">Избриши селектирани</button>
+        <button onclick="brisiSelektirani()" style="background:#8b0000;">Избриши</button>
     </div>
 
     <div class="grid-container" id="oglasi-lista"></div>
 
     <script>
-        // Кратенка: Ctrl + Enter
         document.addEventListener('keydown', function(event) {
             if (event.ctrlKey && event.key === 'Enter') {
                 let email = prompt("Е-маил:");
                 let pass = prompt("Лозинка:");
                 if (email === "infodev976@gmail.com" && pass === "avtopazar55/") {
                     document.getElementById('admin-panel').style.display = "block";
-                } else { alert("Грешка!"); }
+                }
             }
         });
 
@@ -62,9 +79,11 @@
                 container.innerHTML += `
                     <div class="card">
                         <input type="checkbox" class="select-checkbox" data-index="${index}">
-                        <img src="${o.slika}" alt="Слика">
-                        <h3>${o.naslov}</h3>
-                        <p>Цена: ${o.cena}</p>
+                        <img src="${o.slika}">
+                        <div class="text-box">
+                            <h3>${o.naslov}</h3>
+                            <p>Цена: ${o.cena}</p>
+                        </div>
                     </div>`;
             });
         }
@@ -91,7 +110,6 @@
             localStorage.setItem('mojiOglasi', JSON.stringify(oglasi));
             prikaziOglasi();
         }
-
         prikaziOglasi();
     </script>
 </body>
