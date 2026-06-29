@@ -34,8 +34,10 @@
             <h3>АДМИН - Додади оглас</h3>
             <input type="text" id="naslov" placeholder="Наслов">
             <input type="text" id="cena" placeholder="Цена">
-            <input type="file" id="slikaUpload" multiple accept="image/*">
-            <button onclick="dodadiOglas()">Објави оглас</button>
+            <input type="text" id="slikaLink" placeholder="Линк од слика">
+            <button onclick="dodadiLinkVoLista()">Додади слика (макс 10)</button>
+            <p id="brojacSlik">Слики додадени: 0/10</p>
+            <button onclick="objaviOglasFinal()" style="background:green">Објави оглас</button>
             <button onclick="izbrishiOglasi()" style="background:red">ИЗБРИШИ СЕЛЕКТИРАНИ</button>
         </div>
         <div id="oglasi-lista"></div>
@@ -57,8 +59,9 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        
+        let privremenaListaSliki = [];
 
-        // Лозинка
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 if (prompt("Лозинка:") === "avtopazar55/") {
@@ -68,15 +71,28 @@
             }
         });
 
-        window.dodadiOglas = async () => {
-            const files = document.getElementById('slikaUpload').files;
-            let slike = [];
-            for (let file of files) {
-                let base64 = await new Promise(r => { let f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(file); });
-                slike.push(base64);
+        window.dodadiLinkVoLista = () => {
+            let link = document.getElementById('slikaLink').value;
+            if (link && privremenaListaSliki.length < 10) {
+                privremenaListaSliki.push(link);
+                document.getElementById('slikaLink').value = "";
+                document.getElementById('brojacSlik').innerText = `Слики додадени: ${privremenaListaSliki.length}/10`;
+            } else {
+                alert("Максимум 10 слики или празен линк!");
             }
-            push(ref(db, 'oglasi'), { naslov: document.getElementById('naslov').value, cena: document.getElementById('cena').value, slike });
+        };
+
+        window.objaviOglasFinal = () => {
+            const naslov = document.getElementById('naslov').value;
+            const cena = document.getElementById('cena').value;
+            if(!naslov || !cena || privremenaListaSliki.length === 0) return alert("Пополни се!");
+
+            push(ref(db, 'oglasi'), { naslov, cena, slike: privremenaListaSliki });
             alert("Огласот е објавен!");
+            privremenaListaSliki = [];
+            document.getElementById('brojacSlik').innerText = "Слики додадени: 0/10";
+            document.getElementById('naslov').value = "";
+            document.getElementById('cena').value = "";
         };
 
         window.izbrishiOglasi = () => {
@@ -94,7 +110,7 @@
                     container.innerHTML += `
                         <div class="card">
                             <input type="checkbox" class="delete-check" data-id="${id}">
-                            <img src="${o.slike[0]}" onclick="window.open('about:blank').document.write('<h1>${o.naslov}</h1><p>Цена: ${o.cena}€</p>'+o.slike.map(s=>'<img src=\\''+s+'\\' width=\\'300\\'>').join(''))">
+                            <img src="${o.slike[0]}" onclick="window.open('about:blank').document.write('<h1>${o.naslov}</h1><p>Цена: ${o.cena}€</p>'+o.slike.map(s=>'<img src=\\''+s+'\\' width=\\'500\\'>').join('<br>'))">
                             <h3>${o.naslov}</h3>
                             <p>ЦЕНА: ${o.cena} €</p>
                         </div>`;
