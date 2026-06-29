@@ -11,7 +11,6 @@
         input { margin: 5px; padding: 10px; width: 220px; border-radius: 5px; border: none; }
         button { background:#ff4500; border:none; padding:10px 20px; color:white; cursor:pointer; font-weight:bold; border-radius: 5px; margin: 5px; }
         
-        /* СРЕДЕН GRID */
         .grid-container { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
@@ -29,21 +28,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow: hidden; /* Ова го сече секој текст што сака да излезе */
+            overflow: hidden;
         }
         
         .card img { width: 100%; height: 250px; object-fit: cover; border-radius: 5px; }
         
-        /* КОНТЕЈНЕР ЗА ТЕКСТ - ОВДЕ Е МАГИЈАТА */
         .text-box {
             width: 100%;
             margin-top: 10px;
-            word-wrap: break-word;   /* Прекршува долги зборови */
-            word-break: break-all;  /* Сигурно кршење */
+            word-wrap: break-word;
             text-align: center;
         }
-
-        .select-checkbox { position: absolute; top: 15px; right: 15px; transform: scale(1.5); }
     </style>
 </head>
 <body>
@@ -52,15 +47,18 @@
 
     <div id="admin-panel">
         <h3>АДМИН - Додади оглас</h3>
-        <input type="text" id="naslov" placeholder="Наслов" maxlength="50"> <input type="text" id="cena" placeholder="Цена">
+        <input type="text" id="naslov" placeholder="Наслов" maxlength="50"> 
+        <input type="text" id="cena" placeholder="Цена">
         <input type="file" id="slikaFile" accept="image/*">
         <button onclick="dodadiOglas()">Додади</button>
-        <button onclick="brisiSelektirani()" style="background:#8b0000;">Избриши</button>
     </div>
 
     <div class="grid-container" id="oglasi-lista"></div>
 
+    <script type="module" src="script.js"></script>
+    
     <script>
+        // Код за отворање на админ панелот
         document.addEventListener('keydown', function(event) {
             if (event.ctrlKey && event.key === 'Enter') {
                 let email = prompt("Е-маил:");
@@ -70,47 +68,6 @@
                 }
             }
         });
-
-        function prikaziOglasi() {
-            let oglasi = JSON.parse(localStorage.getItem('mojiOglasi')) || [];
-            let container = document.getElementById('oglasi-lista');
-            container.innerHTML = "";
-            oglasi.forEach((o, index) => {
-                container.innerHTML += `
-                    <div class="card">
-                        <input type="checkbox" class="select-checkbox" data-index="${index}">
-                        <img src="${o.slika}">
-                        <div class="text-box">
-                            <h3>${o.naslov}</h3>
-                            <p>Цена: ${o.cena}</p>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function dodadiOglas() {
-            const file = document.getElementById('slikaFile').files[0];
-            if (!file) return alert("Избери слика!");
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                let novi = { naslov: document.getElementById('naslov').value, cena: document.getElementById('cena').value, slika: e.target.result };
-                let oglasi = JSON.parse(localStorage.getItem('mojiOglasi')) || [];
-                oglasi.push(novi);
-                localStorage.setItem('mojiOglasi', JSON.stringify(oglasi));
-                prikaziOglasi();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function brisiSelektirani() {
-            let checkboxes = document.querySelectorAll('.select-checkbox:checked');
-            let oglasi = JSON.parse(localStorage.getItem('mojiOglasi')) || [];
-            let indexi = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-index')));
-            indexi.sort((a,b) => b-a).forEach(i => oglasi.splice(i, 1));
-            localStorage.setItem('mojiOglasi', JSON.stringify(oglasi));
-            prikaziOglasi();
-        }
-        prikaziOglasi();
     </script>
 </body>
 </html>
