@@ -6,18 +6,23 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: sans-serif; background-color: #f9f9f9; padding: 20px; }
-        
-        /* Логото секогаш на средина */
-        header { text-align: center; border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; }
-        .logo-img { width: 300px; display: block; margin: 0 auto; }
+        header { border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; text-align: center; }
+        .logo-img { width: 300px; }
 
+        /* Админ панел */
         #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; background: #fff; margin-bottom: 30px; }
         input { display: block; margin: 10px 0; padding: 10px; width: 100%; max-width: 300px; }
         button { background: #ff4500; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; }
 
+        /* Гриди за огласи */
         #oglasi-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: #fff; border: 1px solid #ddd; padding: 15px; }
+        .card { background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card h3 { font-size: 18px; margin: 10px 0; }
+        .cena-box { background: #1a365d; color: white; padding: 10px; text-align: center; font-weight: bold; margin-bottom: 10px; }
+        .btn-container { display: flex; gap: 5px; }
+        .btn-kontakt { flex: 1; padding: 10px; background: #a68966; color: white; border: none; }
+        .btn-omileni { flex: 1; padding: 10px; background: #fff; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
@@ -30,7 +35,7 @@
         <h3>АДМИН - Додади оглас</h3>
         <input type="text" id="naslov" placeholder="Наслов">
         <input type="text" id="cena" placeholder="Цена">
-        <input type="file" id="slikaUpload" accept="image/*">
+        <input type="text" id="slikaUrl" placeholder="Линк до слика">
         <button onclick="dodadiOglas()">Објави оглас</button>
     </div>
 
@@ -50,7 +55,7 @@
             appId: "1:105094237903:web:02287d90b7e3c0ebc431ba"
         };
 
-        initializeApp(firebaseConfig);
+        const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
         // Лозинка
@@ -61,20 +66,14 @@
             }
         });
 
-        // Функција за Upload
         window.dodadiOglas = () => {
-            const file = document.getElementById('slikaUpload').files[0];
-            const reader = new FileReader();
-            
-            reader.onloadend = function() {
-                push(ref(db, 'oglasi'), { 
-                    naslov: document.getElementById('naslov').value,
-                    cena: document.getElementById('cena').value,
-                    slika: reader.result // Сликата се чува како текст во базата
-                });
+            const naslov = document.getElementById('naslov').value;
+            const cena = document.getElementById('cena').value;
+            const slika = document.getElementById('slikaUrl').value;
+            if(naslov && cena && slika) {
+                push(ref(db, 'oglasi'), { naslov, cena, slika });
                 alert("Огласот е објавен!");
             }
-            if (file) reader.readAsDataURL(file);
         };
 
         onValue(ref(db, 'oglasi'), (snapshot) => {
@@ -85,9 +84,13 @@
                 Object.values(data).forEach(o => {
                     container.innerHTML += `
                         <div class="card">
-                            <img src="${o.slika}">
+                            <img src="${o.slika}" alt="Возило">
                             <h3>${o.naslov}</h3>
-                            <p>Цена: ${o.cena} €</p>
+                            <div class="cena-box">ЦЕНА: ${o.cena} €</div>
+                            <div class="btn-container">
+                                <button class="btn-kontakt">КОНТАКТ</button>
+                                <button class="btn-omileni">ОМИЛЕНИ</button>
+                            </div>
                         </div>`;
                 });
             }
