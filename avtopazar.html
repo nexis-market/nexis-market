@@ -2,42 +2,41 @@
 <html lang="mk">
 <head>
     <meta charset="UTF-8">
-    <title>Avto Pazar - Комплетен</title>
+    <title>AVTO PAZAR - Огласник</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: sans-serif; padding: 20px; background-color: #f9f9f9; }
-        header { border-bottom: 1px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; }
-        .logo-img { width: 300px; display: block; margin-bottom: 10px; }
-        
+        body { font-family: sans-serif; background-color: #f9f9f9; padding: 20px; }
+        header { border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; text-align: center; }
+        .logo-img { width: 300px; }
+
         /* Админ панел */
         #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; background: #fff; margin-bottom: 30px; }
-        input { margin: 5px; padding: 10px; width: 220px; }
-        button { background:#ff4500; border:none; padding:10px 20px; color:white; cursor:pointer; font-weight:bold; }
+        input { display: block; margin: 10px 0; padding: 10px; width: 100%; max-width: 300px; }
+        button { background: #ff4500; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; }
 
-        /* Формат на огласот */
-        #oglasi-lista { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .card { background: #fff; border: 1px solid #ddd; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 200px; object-fit: cover; margin-bottom: 10px; }
-        .card h3 { font-size: 16px; margin-bottom: 10px; min-height: 40px; }
-        .cena-box { background: #1a365d; color: white; padding: 10px; font-weight: bold; text-align: center; margin-bottom: 10px; }
+        /* Гриди за огласи */
+        #oglasi-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card h3 { font-size: 18px; margin: 10px 0; }
+        .cena-box { background: #1a365d; color: white; padding: 10px; text-align: center; font-weight: bold; margin-bottom: 10px; }
         .btn-container { display: flex; gap: 5px; }
-        .btn-kontakt { flex: 1; padding: 8px; background: #c5a059; border: none; color: white; cursor: pointer; }
-        .btn-omileni { flex: 1; padding: 8px; background: #eee; border: 1px solid #ccc; cursor: pointer; }
+        .btn-kontakt { flex: 1; padding: 10px; background: #a68966; color: white; border: none; }
+        .btn-omileni { flex: 1; padding: 10px; background: #fff; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
 
     <header>
         <img src="Gemini_Generated_Image_xwunxmxwunxmxwun.png" class="logo-img" alt="AVTO PAZAR">
-        <div id="admin-trigger" style="font-size: 10px; color: #ccc;">(Ctrl+Enter за админ)</div>
     </header>
 
     <div id="admin-panel">
         <h3>АДМИН - Додади оглас</h3>
         <input type="text" id="naslov" placeholder="Наслов">
         <input type="text" id="cena" placeholder="Цена">
-        <input type="text" id="slikaUrl" placeholder="Линк од слика">
-        <button onclick="dodadiOglas()">Додади оглас</button>
+        <input type="text" id="slikaUrl" placeholder="Линк до слика">
+        <button onclick="dodadiOglas()">Објави оглас</button>
     </div>
 
     <div id="oglasi-lista"></div>
@@ -59,7 +58,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Админ логика
+        // Лозинка
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 let p = prompt("Лозинка:");
@@ -71,11 +70,12 @@
             const naslov = document.getElementById('naslov').value;
             const cena = document.getElementById('cena').value;
             const slika = document.getElementById('slikaUrl').value;
-            push(ref(db, 'oglasi'), { naslov, cena, slika });
-            alert("Огласот е додаден!");
+            if(naslov && cena && slika) {
+                push(ref(db, 'oglasi'), { naslov, cena, slika });
+                alert("Огласот е објавен!");
+            }
         };
 
-        // Прикажување на огласите
         onValue(ref(db, 'oglasi'), (snapshot) => {
             const container = document.getElementById('oglasi-lista');
             container.innerHTML = "";
