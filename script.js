@@ -11,10 +11,11 @@ const firebaseConfig = {
   measurementId: "G-32DGQ8TKTC"
 };
 
+// Иницијализација со конкретната адреса на базата (решава проблем со регионот)
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db = getDatabase(app, "https://avtopazar-1d78e-default-rtdb.europe-west1.firebasedatabase.app");
 
-// Функција за додавање оглас (ја поврзуваме со копчето Додади)
+// Функција за додавање оглас
 window.dodadiOglas = function() {
     const naslov = document.getElementById("naslov").value;
     const cena = document.getElementById("cena").value;
@@ -27,7 +28,6 @@ window.dodadiOglas = function() {
 
     const reader = new FileReader();
     reader.onload = function(e) {
-        // Користиме push за базата сама да креира уникатни ID-а за секој оглас
         push(ref(db, 'oglasi'), {
             naslov: naslov,
             cena: cena,
@@ -36,20 +36,22 @@ window.dodadiOglas = function() {
             alert("Успешно објавен оглас!");
             document.getElementById("naslov").value = "";
             document.getElementById("cena").value = "";
+            document.getElementById("slikaFile").value = ""; // Исчисти го и фајлот
+        }).catch((error) => {
+            alert("ГРЕШКА при праќање: " + error.message);
         });
     };
     reader.readAsDataURL(fileInput.files[0]);
 };
 
-// Функција за прикажување на огласите во реално време
+// Функција за прикажување на огласите
 onValue(ref(db, 'oglasi'), (snapshot) => {
     const container = document.getElementById('oglasi-lista');
     container.innerHTML = "";
     const data = snapshot.val();
     
     if (data) {
-        Object.keys(data).forEach(key => {
-            const o = data[key];
+        Object.entries(data).forEach(([key, o]) => {
             container.innerHTML += `
                 <div class="card">
                     <img src="${o.slika}">
