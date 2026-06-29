@@ -9,14 +9,20 @@
         header { border-bottom: 1px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; }
         .logo-img { width: 300px; display: block; margin-bottom: 10px; }
         
-        /* Админ панел стил */
+        /* Админ панел */
         #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; background: #fff; margin-bottom: 30px; }
         input { margin: 5px; padding: 10px; width: 220px; }
         button { background:#ff4500; border:none; padding:10px 20px; color:white; cursor:pointer; font-weight:bold; }
 
+        /* Формат на огласот */
         #oglasi-lista { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .card { background: #fff; border: 1px solid #ddd; padding: 15px; }
-        .card img { width: 100%; height: 160px; object-fit: cover; margin-bottom: 10px; }
+        .card { background: #fff; border: 1px solid #ddd; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 200px; object-fit: cover; margin-bottom: 10px; }
+        .card h3 { font-size: 16px; margin-bottom: 10px; min-height: 40px; }
+        .cena-box { background: #1a365d; color: white; padding: 10px; font-weight: bold; text-align: center; margin-bottom: 10px; }
+        .btn-container { display: flex; gap: 5px; }
+        .btn-kontakt { flex: 1; padding: 8px; background: #c5a059; border: none; color: white; cursor: pointer; }
+        .btn-omileni { flex: 1; padding: 8px; background: #eee; border: 1px solid #ccc; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -38,7 +44,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA5HhfVOsOMUCCNF7wNI4MlVrJD0BFtxMU",
@@ -53,7 +59,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Функција за отворање админ
+        // Админ логика
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 let p = prompt("Лозинка:");
@@ -61,7 +67,6 @@
             }
         });
 
-        // Функција за додавање
         window.dodadiOglas = () => {
             const naslov = document.getElementById('naslov').value;
             const cena = document.getElementById('cena').value;
@@ -70,14 +75,23 @@
             alert("Огласот е додаден!");
         };
 
-        // Прикажување
+        // Прикажување на огласите
         onValue(ref(db, 'oglasi'), (snapshot) => {
             const container = document.getElementById('oglasi-lista');
             container.innerHTML = "";
             const data = snapshot.val();
             if (data) {
                 Object.values(data).forEach(o => {
-                    container.innerHTML += `<div class="card"><img src="${o.slika}"><h3>${o.naslov}</h3><p>${o.cena} €</p></div>`;
+                    container.innerHTML += `
+                        <div class="card">
+                            <img src="${o.slika}" alt="Возило">
+                            <h3>${o.naslov}</h3>
+                            <div class="cena-box">ЦЕНА: ${o.cena} €</div>
+                            <div class="btn-container">
+                                <button class="btn-kontakt">КОНТАКТ</button>
+                                <button class="btn-omileni">ОМИЛЕНИ</button>
+                            </div>
+                        </div>`;
                 });
             }
         });
