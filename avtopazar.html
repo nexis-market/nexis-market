@@ -5,26 +5,24 @@
     <title>AVTO PAZAR - Огласник</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: sans-serif; background-color: #f9f9f9; padding: 20px; }
+        body { font-family: sans-serif; background-color: #ffffff; padding: 20px; }
         
-        header { text-align: center; border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; }
-        .logo-img { width: 300px; display: block; margin: 0 auto; }
+        /* Лого лево */
+        header { display: flex; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; }
+        .logo-img { width: 200px; }
 
-        #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; background: #fff; margin-bottom: 30px; max-width: 400px; margin-left: auto; margin-right: auto; }
+        /* Контејнер ограничен лево (до твојата „црна линија“) */
+        .main-content {
+            max-width: 900px; /* Прилагоди ја оваа вредност ако сакаш потесно/пошироко */
+            margin: 0; /* Ова го држи содржината лево */
+        }
+
+        #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; background: #fff; margin-bottom: 30px; width: 100%; max-width: 400px; }
         input { display: block; margin: 10px 0; padding: 10px; width: 100%; }
         button { background: #ff4500; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; width: 100%; }
 
-        #oglasi-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        
-        .card { 
-            background: #fff; 
-            border: 1px solid #ddd; 
-            padding: 15px; 
-            text-align: center; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-        }
+        #oglasi-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: #fff; border: 1px solid #ddd; padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; }
         .card img { width: 100%; height: 200px; object-fit: cover; margin-bottom: 10px; }
         .card h3 { font-size: 18px; margin: 5px 0; width: 100%; word-wrap: break-word; }
         .card p { font-weight: bold; color: #ff4500; margin-top: 5px; }
@@ -36,15 +34,17 @@
         <img src="Gemini_Generated_Image_xwunxmxwunxmxwun.png" class="logo-img" alt="AVTO PAZAR">
     </header>
 
-    <div id="admin-panel">
-        <h3>АДМИН - Додади оглас</h3>
-        <input type="text" id="naslov" placeholder="Наслов">
-        <input type="text" id="cena" placeholder="Цена">
-        <input type="file" id="slikaUpload" accept="image/*">
-        <button onclick="dodadiOglas()">Објави оглас</button>
-    </div>
+    <div class="main-content">
+        <div id="admin-panel">
+            <h3>АДМИН - Додади оглас</h3>
+            <input type="text" id="naslov" placeholder="Наслов">
+            <input type="text" id="cena" placeholder="Цена">
+            <input type="file" id="slikaUpload" accept="image/*">
+            <button onclick="dodadiOglas()">Објави оглас</button>
+        </div>
 
-    <div id="oglasi-lista"></div>
+        <div id="oglasi-lista"></div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -74,7 +74,6 @@
             const naslov = document.getElementById('naslov').value;
             const cena = document.getElementById('cena').value;
             const file = document.getElementById('slikaUpload').files[0];
-            
             if(!naslov || !cena || !file) return alert("Пополни ги сите полиња!");
 
             const reader = new FileReader();
