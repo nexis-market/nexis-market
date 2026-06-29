@@ -1,0 +1,52 @@
+/* Reset за прецизност */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { font-family: sans-serif; padding: 20px; background-color: #f9f9f9; }
+
+/* Header и мени */
+.nav-links { display: flex; gap: 20px; margin-bottom: 30px; font-size: 14px; }
+#omileni-link { font-weight: bold; cursor: pointer; color: #000; }
+
+/* Главниот распоред (sidebar + oglasi) */
+main { display: grid; grid-template-columns: 200px 1fr; gap: 30px; }
+
+.sidebar { background: #fff; border: 1px solid #ddd; height: 600px; }
+
+.oglasi-container { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 20px; 
+    align-content: start;
+}
+
+/* Изглед на картичката */
+.oglas-card { 
+    background: #fff; 
+    border: 1px solid #ddd; 
+    padding: 15px; 
+    display: flex; 
+    flex-direction: column;
+}
+
+.slika { background: #e0e0e0; height: 160px; margin-bottom: 15px; }
+
+.oglas-card p { font-weight: bold; margin-bottom: 10px; font-size: 15px; }
+
+.cena { 
+    background-color: #1a365d; 
+    color: white; 
+    padding: 8px; 
+    text-align: center; 
+    font-weight: bold; 
+    margin-bottom: 10px; 
+}
+
+.omileni-btn { 
+    padding: 10px; 
+    background: #fff; 
+    border: 1px solid #ccc; 
+    cursor: pointer; 
+    font-size: 12px; 
+}
+
+.omileni-btn:hover { background: #f0f0f0; }
