@@ -6,23 +6,28 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: sans-serif; background-color: #f9f9f9; padding: 20px; }
-        header { border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; text-align: center; }
-        .logo-img { width: 300px; }
+        
+        header { text-align: center; border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; }
+        .logo-img { width: 300px; display: block; margin: 0 auto; }
 
-        /* Админ панел */
-        #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; background: #fff; margin-bottom: 30px; }
-        input { display: block; margin: 10px 0; padding: 10px; width: 100%; max-width: 300px; }
-        button { background: #ff4500; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; }
+        #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; background: #fff; margin-bottom: 30px; max-width: 400px; margin-left: auto; margin-right: auto; }
+        input { display: block; margin: 10px 0; padding: 10px; width: 100%; }
+        button { background: #ff4500; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; width: 100%; }
 
-        /* Гриди за огласи */
         #oglasi-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .card h3 { font-size: 18px; margin: 10px 0; }
-        .cena-box { background: #1a365d; color: white; padding: 10px; text-align: center; font-weight: bold; margin-bottom: 10px; }
-        .btn-container { display: flex; gap: 5px; }
-        .btn-kontakt { flex: 1; padding: 10px; background: #a68966; color: white; border: none; }
-        .btn-omileni { flex: 1; padding: 10px; background: #fff; border: 1px solid #ccc; }
+        
+        .card { 
+            background: #fff; 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+        }
+        .card img { width: 100%; height: 200px; object-fit: cover; margin-bottom: 10px; }
+        .card h3 { font-size: 18px; margin: 5px 0; width: 100%; word-wrap: break-word; }
+        .card p { font-weight: bold; color: #ff4500; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -35,7 +40,7 @@
         <h3>АДМИН - Додади оглас</h3>
         <input type="text" id="naslov" placeholder="Наслов">
         <input type="text" id="cena" placeholder="Цена">
-        <input type="text" id="slikaUrl" placeholder="Линк до слика">
+        <input type="file" id="slikaUpload" accept="image/*">
         <button onclick="dodadiOglas()">Објави оглас</button>
     </div>
 
@@ -58,7 +63,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Лозинка
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 let p = prompt("Лозинка:");
@@ -69,11 +73,18 @@
         window.dodadiOglas = () => {
             const naslov = document.getElementById('naslov').value;
             const cena = document.getElementById('cena').value;
-            const slika = document.getElementById('slikaUrl').value;
-            if(naslov && cena && slika) {
-                push(ref(db, 'oglasi'), { naslov, cena, slika });
+            const file = document.getElementById('slikaUpload').files[0];
+            
+            if(!naslov || !cena || !file) return alert("Пополни ги сите полиња!");
+
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                push(ref(db, 'oglasi'), { naslov, cena, slika: reader.result });
                 alert("Огласот е објавен!");
+                document.getElementById('naslov').value = "";
+                document.getElementById('cena').value = "";
             }
+            reader.readAsDataURL(file);
         };
 
         onValue(ref(db, 'oglasi'), (snapshot) => {
@@ -84,13 +95,9 @@
                 Object.values(data).forEach(o => {
                     container.innerHTML += `
                         <div class="card">
-                            <img src="${o.slika}" alt="Возило">
+                            <img src="${o.slika}">
                             <h3>${o.naslov}</h3>
-                            <div class="cena-box">ЦЕНА: ${o.cena} €</div>
-                            <div class="btn-container">
-                                <button class="btn-kontakt">КОНТАКТ</button>
-                                <button class="btn-omileni">ОМИЛЕНИ</button>
-                            </div>
+                            <p>ЦЕНА: ${o.cena} €</p>
                         </div>`;
                 });
             }
