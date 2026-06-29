@@ -2,27 +2,75 @@
 <html lang="mk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avto Pazar</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Avto Pazar - Комплетен</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: sans-serif; padding: 20px; background-color: #f9f9f9; }
+        header { border-bottom: 1px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; }
+        .logo-img { width: 200px; display: block; margin-bottom: 10px; }
+        .nav-links { font-weight: bold; }
+        
+        main { display: grid; grid-template-columns: 200px 1fr; gap: 30px; }
+        .sidebar { background: #fff; border: 1px solid #ddd; height: 600px; }
+        
+        #oglasi-lista { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-content: start; }
+        
+        .card { background: #fff; border: 1px solid #ddd; padding: 15px; display: flex; flex-direction: column; }
+        .card img { width: 100%; height: 160px; object-fit: cover; margin-bottom: 15px; background: #eee; }
+        .card h3 { font-size: 15px; margin-bottom: 10px; }
+        .card p { background: #1a365d; color: white; padding: 8px; text-align: center; font-weight: bold; }
+    </style>
 </head>
 <body>
 
     <header>
-        <div class="nav-links">
-            <span>Сите огласи</span>
-            <span>Продавници</span>
-            <span id="omileni-link">Мои омилени огласи</span>
-        </div>
+        <img src="Screenshot 2026-06-29 214315.png" class="logo-img" alt="AVTO PAZAR">
+        <div class="nav-links"><span>Сите огласи</span></div>
     </header>
 
     <main>
-        <aside class="sidebar"></aside> 
-        
-        <section class="oglasi-container" id="oglasi-lista">
-            </section>
+        <div class="sidebar"></div>
+        <div id="oglasi-lista"></div>
     </main>
 
-    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // Вметни ги твоите точни податоци овде!
+        const firebaseConfig = {
+            apiKey: "AIzaSyA5HhfVOsOMUCCNF7wNI4MlVrJD0BFtxMU",
+            authDomain: "avtopazar-1d78e.firebaseapp.com",
+            databaseURL: "https://avtopazar-1d78e-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "avtopazar-1d78e",
+            storageBucket: "avtopazar-1d78e.firebasestorage.app",
+            messagingSenderId: "105094237903",
+            appId: "1:105094237903:web:02287d90b7e3c0ebc431ba"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Вчитување на огласите
+        onValue(ref(db, 'oglasi'), (snapshot) => {
+            const container = document.getElementById('oglasi-lista');
+            container.innerHTML = "";
+            const data = snapshot.val();
+            
+            if (data) {
+                Object.values(data).forEach(o => {
+                    container.innerHTML += `
+                        <div class="card">
+                            <img src="${o.slika || ''}" alt="Возило">
+                            <h3>${o.naslov || 'Нема наслов'}</h3>
+                            <p>${o.cena || '0'} €</p>
+                        </div>`;
+                });
+            } else {
+                container.innerHTML = "<p>Моментално нема огласи во базата.</p>";
+            }
+        });
+    </script>
 </body>
 </html>
