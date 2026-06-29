@@ -85,7 +85,7 @@
         window.objaviOglasFinal = () => {
             const naslov = document.getElementById('naslov').value;
             const cena = document.getElementById('cena').value;
-            if(!naslov || !cena || privremenaListaSliki.length === 0) return alert("Пополни се!");
+            if(!naslov || !cena || privremenaListaSliki.length === 0) return alert("Пополни ги сите полиња!");
 
             push(ref(db, 'oglasi'), { naslov, cena, slike: privremenaListaSliki });
             alert("Огласот е објавен!");
@@ -107,14 +107,21 @@
             const data = snapshot.val();
             if (data) {
                 Object.entries(data).forEach(([id, o]) => {
+                    // Користиме о.slike (листата) што ја зачувавме во базата
+                    const prvaSlika = (o.slike && o.slike.length > 0) ? o.slike[0] : "";
+                    
                     container.innerHTML += `
                         <div class="card">
                             <input type="checkbox" class="delete-check" data-id="${id}">
-                            <img src="${o.slike[0]}" onclick="window.open('about:blank').document.write('<h1>${o.naslov}</h1><p>Цена: ${o.cena}€</p>'+o.slike.map(s=>'<img src=\\''+s+'\\' width=\\'500\\'>').join('<br>'))">
+                            <img src="${prvaSlika}" onclick="window.open('about:blank').document.write('<h1>${o.naslov}</h1><p>Цена: ${o.cena}€</p>'+o.slike.map(s=>'<img src=\\''+s+'\\' style=\\'max-width:100%; display:block; margin-bottom:10px;\\'>').join(''))">
                             <h3>${o.naslov}</h3>
                             <p>ЦЕНА: ${o.cena} €</p>
                         </div>`;
                 });
+                // Повторно прикажување на чекбоксовите ако сме во админ мод
+                if (document.getElementById('admin-panel').style.display === "block") {
+                    document.querySelectorAll('.delete-check').forEach(c => c.style.display = "block");
+                }
             }
         });
     </script>
