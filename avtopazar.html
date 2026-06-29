@@ -3,40 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Avto Pazar - Комплетен</title>
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: sans-serif; padding: 20px; background-color: #f9f9f9; }
         header { border-bottom: 1px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; }
         .logo-img { width: 300px; display: block; margin-bottom: 10px; }
-        .nav-links { font-weight: bold; }
         
-        main { display: grid; grid-template-columns: 200px 1fr; gap: 30px; }
-        .sidebar { background: #fff; border: 1px solid #ddd; height: 600px; }
-        
-        #oglasi-lista { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-content: start; }
-        
-        .card { background: #fff; border: 1px solid #ddd; padding: 15px; display: flex; flex-direction: column; }
-        .card img { width: 100%; height: 160px; object-fit: cover; margin-bottom: 15px; background: #eee; }
-        .card h3 { font-size: 15px; margin-bottom: 10px; }
-        .card p { background: #1a365d; color: white; padding: 8px; text-align: center; font-weight: bold; }
+        /* Админ панел стил */
+        #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; background: #fff; margin-bottom: 30px; }
+        input { margin: 5px; padding: 10px; width: 220px; }
+        button { background:#ff4500; border:none; padding:10px 20px; color:white; cursor:pointer; font-weight:bold; }
+
+        #oglasi-lista { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .card { background: #fff; border: 1px solid #ddd; padding: 15px; }
+        .card img { width: 100%; height: 160px; object-fit: cover; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <header>
         <img src="Gemini_Generated_Image_xwunxmxwunxmxwun.png" class="logo-img" alt="AVTO PAZAR">
-        <div class="nav-links"><span>Сите огласи</span></div>
+        <div id="admin-trigger" style="font-size: 10px; color: #ccc;">(Ctrl+Enter за админ)</div>
     </header>
 
-    <main>
-        <div class="sidebar"></div>
-        <div id="oglasi-lista"></div>
-    </main>
+    <div id="admin-panel">
+        <h3>АДМИН - Додади оглас</h3>
+        <input type="text" id="naslov" placeholder="Наслов">
+        <input type="text" id="cena" placeholder="Цена">
+        <input type="text" id="slikaUrl" placeholder="Линк од слика">
+        <button onclick="dodadiOglas()">Додади оглас</button>
+    </div>
+
+    <div id="oglasi-lista"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA5HhfVOsOMUCCNF7wNI4MlVrJD0BFtxMU",
@@ -51,22 +53,32 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // Функција за отворање админ
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                let p = prompt("Лозинка:");
+                if (p === "avtopazar55/") document.getElementById('admin-panel').style.display = "block";
+            }
+        });
+
+        // Функција за додавање
+        window.dodadiOglas = () => {
+            const naslov = document.getElementById('naslov').value;
+            const cena = document.getElementById('cena').value;
+            const slika = document.getElementById('slikaUrl').value;
+            push(ref(db, 'oglasi'), { naslov, cena, slika });
+            alert("Огласот е додаден!");
+        };
+
+        // Прикажување
         onValue(ref(db, 'oglasi'), (snapshot) => {
             const container = document.getElementById('oglasi-lista');
             container.innerHTML = "";
             const data = snapshot.val();
-            
             if (data) {
                 Object.values(data).forEach(o => {
-                    container.innerHTML += `
-                        <div class="card">
-                            <img src="${o.slika || ''}" alt="Возило">
-                            <h3>${o.naslov || 'Нема наслов'}</h3>
-                            <p>${o.cena || '0'} €</p>
-                        </div>`;
+                    container.innerHTML += `<div class="card"><img src="${o.slika}"><h3>${o.naslov}</h3><p>${o.cena} €</p></div>`;
                 });
-            } else {
-                container.innerHTML = "<p>Моментално нема огласи во базата.</p>";
             }
         });
     </script>
