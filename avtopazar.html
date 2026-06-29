@@ -2,72 +2,27 @@
 <html lang="mk">
 <head>
     <meta charset="UTF-8">
-    <title>AVTO PAZAR</title>
-    <style>
-        body { background-color: #121212; color: white; font-family: Arial, sans-serif; padding: 20px; text-align: center; }
-        h1 { color: #ff4500; }
-        
-        #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; border-radius: 10px; background: #1a1a1a; margin-bottom: 30px; }
-        input { margin: 5px; padding: 10px; width: 220px; border-radius: 5px; border: none; }
-        button { background:#ff4500; border:none; padding:10px 20px; color:white; cursor:pointer; font-weight:bold; border-radius: 5px; margin: 5px; }
-        
-        .grid-container { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 20px; 
-            max-width: 1000px; 
-            margin: auto; 
-        }
-        
-        .card { 
-            border: 2px solid #ff4500; 
-            padding: 15px; 
-            border-radius: 10px; 
-            background: #1a1a1a; 
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow: hidden;
-        }
-        
-        .card img { width: 100%; height: 250px; object-fit: cover; border-radius: 5px; }
-        
-        .text-box {
-            width: 100%;
-            margin-top: 10px;
-            word-wrap: break-word;
-            text-align: center;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avto Pazar</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>AVTO PAZAR</h1>
+    <header>
+        <div class="nav-links">
+            <span>Сите огласи</span>
+            <span>Продавници</span>
+            <span id="omileni-link">Мои омилени огласи</span>
+        </div>
+    </header>
 
-    <div id="admin-panel">
-        <h3>АДМИН - Додади оглас</h3>
-        <input type="text" id="naslov" placeholder="Наслов" maxlength="50"> 
-        <input type="text" id="cena" placeholder="Цена">
-        <input type="file" id="slikaFile" accept="image/*">
-        <button onclick="dodadiOglas()">Додади</button>
-    </div>
-
-    <div class="grid-container" id="oglasi-lista"></div>
+    <main>
+        <div class="sidebar"></div> 
+        
+        <div class="oglasi-container" id="oglasi-lista">
+        </div>
+    </main>
 
     <script type="module" src="script.js"></script>
-    
-    <script>
-        // Код за отворање на админ панелот
-        document.addEventListener('keydown', function(event) {
-            if (event.ctrlKey && event.key === 'Enter') {
-                let email = prompt("Е-маил:");
-                let pass = prompt("Лозинка:");
-                if (email === "infodev976@gmail.com" && pass === "avtopazar55/") {
-                    document.getElementById('admin-panel').style.display = "block";
-                }
-            }
-        });
-    </script>
 </body>
 </html>
