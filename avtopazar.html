@@ -17,6 +17,7 @@
         .card img { width: 100%; height: 200px; object-fit: cover; margin-bottom: 10px; cursor: pointer; }
         .delete-check { display: none; position: absolute; top: 10px; right: 10px; transform: scale(1.5); }
 
+        /* Модал прозорец (Lightbox) */
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
         #big-img { max-width: 80%; max-height: 60%; }
         .nav-btns { margin-top: 20px; }
@@ -32,8 +33,8 @@
     <div class="main-content">
         <div id="admin-panel">
             <h3>АДМИН - Додади оглас</h3>
-            <input type="text" id="naslov" placeholder="Наслов (макс 30)" maxlength="30">
-            <input type="text" id="cena" placeholder="Цена (макс 15)" maxlength="15">
+            <input type="text" id="naslov" placeholder="Наслов">
+            <input type="text" id="cena" placeholder="Цена">
             <input type="text" id="slikaLink" placeholder="Линк од слика">
             <button onclick="dodadiLinkVoLista()">Додади слика (макс 10)</button>
             <p id="brojacSlik">Слики додадени: 0/10</p>
@@ -68,10 +69,21 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         
-        let privremenaListaSliki = [], trenutniSliki = [], indeks = 0;
+        let privremenaListaSliki = [];
+        let trenutniSliki = [];
+        let indeks = 0;
 
-        window.otvoriGalerija = (sliki) => { trenutniSliki = sliki; indeks = 0; document.getElementById('big-img').src = trenutniSliki[indeks]; document.getElementById('modal').style.display = 'flex'; };
-        window.promeniSlika = (smer) => { indeks = (indeks + smer + trenutniSliki.length) % trenutniSliki.length; document.getElementById('big-img').src = trenutniSliki[indeks]; };
+        window.otvoriGalerija = (sliki) => {
+            trenutniSliki = sliki;
+            indeks = 0;
+            document.getElementById('big-img').src = trenutniSliki[indeks];
+            document.getElementById('modal').style.display = 'flex';
+        };
+
+        window.promeniSlika = (smer) => {
+            indeks = (indeks + smer + trenutniSliki.length) % trenutniSliki.length;
+            document.getElementById('big-img').src = trenutniSliki[indeks];
+        };
 
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
@@ -118,7 +130,8 @@
                             <input type="checkbox" class="delete-check" data-id="${id}">
                             <img src="${o.slike[0]}" onclick="otvoriGalerija(${JSON.stringify(o.slike).replace(/"/g, "'")})">
                             <h3>${o.naslov}</h3>
-                            <p>ЦЕНА: ${o.cena} ден.</p> </div>`;
+                            <p>ЦЕНА: ${o.cena} €</p>
+                        </div>`;
                 });
                 if (document.getElementById('admin-panel').style.display === "block") {
                     document.querySelectorAll('.delete-check').forEach(c => c.style.display = "block");
