@@ -6,28 +6,43 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: sans-serif; background-color: #ffffff; padding: 20px; }
-        header { display: flex; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 20px; }
+        header { display: flex; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; }
         .logo-img { width: 200px; }
-        
-        .nav-menu { margin-bottom: 30px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-        .nav-link { cursor: pointer; color: #000; text-decoration: none; font-weight: bold; margin-right: 20px; }
-        .nav-link:hover { color: #ff4500; }
-
         .main-content { max-width: 1100px; margin: 0 auto; }
+        
         #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; background: #fff; margin-bottom: 30px; }
         input { display: block; margin: 10px 0; padding: 10px; width: 100%; }
         button { background: #ff4500; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 5px; }
 
-        /* 4 колони распоред */
-        #oglasi-lista { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .card { background: #fff; border: 1px solid #ddd; padding: 15px; text-align: center; position: relative; }
+        /* ФИКСЕН РАСПОРЕД 4 КОЛОНИ */
+        #oglasi-lista { 
+            display: grid; 
+            grid-template-columns: repeat(4, 250px); 
+            justify-content: center; 
+            gap: 20px; 
+        }
+
+        /* ФИКСНИ ДИМЕНЗИИ НА КАРТИЧКИТЕ */
+        .card { 
+            background: #fff; border: 1px solid #ddd; padding: 15px; text-align: center; position: relative;
+            width: 250px; height: 350px; display: flex; flex-direction: column; justify-content: space-between;
+        }
+
         .card img { width: 100%; height: 180px; object-fit: cover; margin-bottom: 10px; cursor: pointer; }
         
-        /* Стил на копче за омилени */
-        .fav-link { display: inline-block; padding: 8px 15px; background-color: #c8a979; color: white; text-decoration: none; border-radius: 4px; cursor: pointer; font-size: 13px; margin-top: 10px; font-weight: bold; }
-        .del-link { background-color: #d9534f; }
-        
+        /* КРАТЕЊЕ НА ТЕКСТОТ СО ... */
+        .card h3 { 
+            font-size: 16px; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            margin: 10px 0;
+        }
+
+        .fav-link { display: inline-block; padding: 8px 15px; background-color: #c8a979; color: white; text-decoration: none; border-radius: 4px; cursor: pointer; font-size: 13px; margin-top: auto; font-weight: bold; }
+        .del-link { background-color: red; }
         .delete-check { display: none; position: absolute; top: 10px; right: 10px; transform: scale(1.5); }
+        
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
         #big-img { max-width: 80%; max-height: 60%; }
         .nav-btns { margin-top: 20px; }
@@ -48,8 +63,8 @@
 
         <div id="admin-panel">
             <h3>АДМИН - Додади оглас</h3>
-            <input type="text" id="naslov" placeholder="Наслов">
-            <input type="text" id="cena" placeholder="Цена">
+            <input type="text" id="naslov" placeholder="Наслов" maxlength="30">
+            <input type="text" id="cena" placeholder="Цена" maxlength="15">
             <input type="text" id="slikaLink" placeholder="Линк од слика">
             <button onclick="dodadiLinkVoLista()">Додади слика (макс 10)</button>
             <p id="brojacSlik">Слики додадени: 0/10</p>
@@ -85,7 +100,6 @@
 
         window.otvoriGalerija = (sliki) => { trenutniSliki = sliki; indeks = 0; document.getElementById('big-img').src = trenutniSliki[indeks]; document.getElementById('modal').style.display = 'flex'; };
         window.promeniSlika = (smer) => { indeks = (indeks + smer + trenutniSliki.length) % trenutniSliki.length; document.getElementById('big-img').src = trenutniSliki[indeks]; };
-        
         window.dodadiVoOmileni = (id) => { let o = JSON.parse(localStorage.getItem('omileni') || "[]"); if(!o.includes(id)) { o.push(id); localStorage.setItem('omileni', JSON.stringify(o)); alert("Зачувано!"); } };
         window.izbrishiOdOmileni = (id) => { let o = JSON.parse(localStorage.getItem('omileni') || "[]"); o = o.filter(i => i !== id); localStorage.setItem('omileni', JSON.stringify(o)); prikazhiOmileni(); };
         window.prikazhiOmileni = () => { let ids = JSON.parse(localStorage.getItem('omileni') || "[]"); render(siteOglasi, ids, true); };
@@ -110,7 +124,7 @@
 
         document.addEventListener('keydown', (e) => { if (e.ctrlKey && e.key === 'Enter') { if (prompt("Лозинка:") === "avtopazar55/") { document.getElementById('admin-panel').style.display = "block"; document.querySelectorAll('.delete-check').forEach(c => c.style.display = "block"); } } });
         window.dodadiLinkVoLista = () => { let link = document.getElementById('slikaLink').value; if (link && privremenaListaSliki.length < 10) { privremenaListaSliki.push(link); document.getElementById('slikaLink').value = ""; document.getElementById('brojacSlik').innerText = `Слики: ${privremenaListaSliki.length}/10`; } };
-        window.objaviOglasFinal = () => { const naslov = document.getElementById('naslov').value, cena = document.getElementById('cena').value; if(!naslov || !cena || privremenaListaSliki.length === 0) return alert("Пополни се!"); push(ref(db, 'oglasi'), { naslov, cena, slike: privremenaListaSliki }); alert("Објавено!"); privremenaListaSliki = []; };
+        window.objaviOglasFinal = () => { const naslov = document.getElementById('naslov').value, cena = document.getElementById('cena').value; if(!naslov || !cena || privremenaListaSliki.length === 0) return alert("Пополни се!"); push(ref(db, 'oglasi'), { naslov, cena, slike: privremenaListaSliki }); alert("Објавено!"); privremenaListaSliki = []; document.getElementById('naslov').value = ""; document.getElementById('cena').value = ""; };
         window.izbrishiOglasi = () => { document.querySelectorAll('.delete-check:checked').forEach(cb => { remove(ref(db, 'oglasi/' + cb.dataset.id)); }); };
         
         onValue(ref(db, 'oglasi'), (snapshot) => { siteOglasi = snapshot.val() || {}; render(siteOglasi); });
