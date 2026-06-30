@@ -6,9 +6,11 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: sans-serif; background-color: #ffffff; padding: 20px; }
-        /* Промена: flex-direction: column за да бидат еден под друг и центрирани */
-        header { display: flex; flex-direction: column; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; gap: 20px; }
-        .logo-img { width: 200px; }
+        
+        /* Вратено: header повторно користи flex за логото да биде лево */
+        header { display: flex; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .logo-img { width: 200px; margin-right: auto; }
+        
         .main-content { max-width: 1100px; margin: 0 auto; }
         
         /* МЕНИ СТИЛОВИ */
