@@ -6,18 +6,25 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: sans-serif; background-color: #ffffff; padding: 20px; }
-        header { display: flex; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 30px; }
+        header { display: flex; align-items: center; border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 20px; }
         .logo-img { width: 200px; }
+        
+        /* Мени стилови */
+        .nav-menu { margin-bottom: 30px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        .nav-link { cursor: pointer; color: #000; text-decoration: none; font-weight: bold; margin-right: 20px; }
+        .nav-link:hover { color: #ff4500; }
+
         .main-content { max-width: 900px; }
         #admin-panel { display: none; border: 2px dashed #ff4500; padding: 20px; background: #fff; margin-bottom: 30px; }
         input { display: block; margin: 10px 0; padding: 10px; width: 100%; }
         button { background: #ff4500; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 5px; }
+
         #oglasi-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
         .card { background: #fff; border: 1px solid #ddd; padding: 15px; text-align: center; position: relative; }
         .card img { width: 100%; height: 200px; object-fit: cover; margin-bottom: 10px; cursor: pointer; }
         .delete-check { display: none; position: absolute; top: 10px; right: 10px; transform: scale(1.5); }
+        .fav-link { display: block; margin-top: 10px; color: #ff4500; text-decoration: underline; cursor: pointer; font-size: 14px; }
 
-        /* Модал прозорец (Lightbox) */
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column; }
         #big-img { max-width: 80%; max-height: 60%; }
         .nav-btns { margin-top: 20px; }
@@ -31,6 +38,11 @@
     </header>
 
     <div class="main-content">
+        <nav class="nav-menu">
+            <a class="nav-link" onclick="location.reload()">ПОЧЕТНА</a>
+            <a class="nav-link" onclick="prikazhiOmileni()">ОМИЛЕНИ</a>
+        </nav>
+
         <div id="admin-panel">
             <h3>АДМИН - Додади оглас</h3>
             <input type="text" id="naslov" placeholder="Наслов">
@@ -56,7 +68,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = {
+        const db = getDatabase(initializeApp({ 
             apiKey: "AIzaSyA5HhfVOsOMUCCNF7wNI4MlVrJD0BFtxMU",
             authDomain: "avtopazar-1d78e.firebaseapp.com",
             databaseURL: "https://avtopazar-1d78e-default-rtdb.europe-west1.firebasedatabase.app",
@@ -64,18 +76,12 @@
             storageBucket: "avtopazar-1d78e.firebasestorage.app",
             messagingSenderId: "105094237903",
             appId: "1:105094237903:web:02287d90b7e3c0ebc431ba"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        }));
         
-        let privremenaListaSliki = [];
-        let trenutniSliki = [];
-        let indeks = 0;
+        let privremenaListaSliki = [], trenutniSliki = [], indeks = 0, siteOglasi = {};
 
         window.otvoriGalerija = (sliki) => {
-            trenutniSliki = sliki;
-            indeks = 0;
+            trenutniSliki = sliki; indeks = 0;
             document.getElementById('big-img').src = trenutniSliki[indeks];
             document.getElementById('modal').style.display = 'flex';
         };
@@ -84,6 +90,35 @@
             indeks = (indeks + smer + trenutniSliki.length) % trenutniSliki.length;
             document.getElementById('big-img').src = trenutniSliki[indeks];
         };
+
+        window.dodadiVoOmileni = (id) => {
+            let omileni = JSON.parse(localStorage.getItem('omileni') || "[]");
+            if (!omileni.includes(id)) { omileni.push(id); localStorage.setItem('omileni', JSON.stringify(omileni)); alert("Додадено во омилени!"); }
+        };
+
+        window.prikazhiOmileni = () => {
+            let omileni = JSON.parse(localStorage.getItem('omileni') || "[]");
+            renderirajOglasi(siteOglasi, omileni);
+        };
+
+        function renderirajOglasi(data, filterIds = null) {
+            const container = document.getElementById('oglasi-lista');
+            container.innerHTML = "";
+            Object.entries(data || {}).forEach(([id, o]) => {
+                if (filterIds && !filterIds.includes(id)) return;
+                container.innerHTML += `
+                    <div class="card">
+                        <input type="checkbox" class="delete-check" data-id="${id}">
+                        <img src="${o.slike[0]}" onclick="otvoriGalerija(${JSON.stringify(o.slike).replace(/"/g, "'")})">
+                        <h3>${o.naslov}</h3>
+                        <p>ЦЕНА: ${o.cena} €</p>
+                        <a class="fav-link" onclick="dodadiVoOmileni('${id}')">Додади во омилени</a>
+                    </div>`;
+            });
+            if (document.getElementById('admin-panel').style.display === "block") {
+                document.querySelectorAll('.delete-check').forEach(c => c.style.display = "block");
+            }
+        }
 
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
@@ -100,19 +135,14 @@
                 privremenaListaSliki.push(link);
                 document.getElementById('slikaLink').value = "";
                 document.getElementById('brojacSlik').innerText = `Слики додадени: ${privremenaListaSliki.length}/10`;
-            } else { alert("Максимум 10 слики или празен линк!"); }
+            }
         };
 
         window.objaviOglasFinal = () => {
-            const naslov = document.getElementById('naslov').value;
-            const cena = document.getElementById('cena').value;
+            const naslov = document.getElementById('naslov').value, cena = document.getElementById('cena').value;
             if(!naslov || !cena || privremenaListaSliki.length === 0) return alert("Пополни се!");
             push(ref(db, 'oglasi'), { naslov, cena, slike: privremenaListaSliki });
-            alert("Огласот е објавен!");
-            privremenaListaSliki = [];
-            document.getElementById('brojacSlik').innerText = "Слики додадени: 0/10";
-            document.getElementById('naslov').value = "";
-            document.getElementById('cena').value = "";
+            alert("Објавено!"); privremenaListaSliki = [];
         };
 
         window.izbrishiOglasi = () => {
@@ -120,23 +150,8 @@
         };
 
         onValue(ref(db, 'oglasi'), (snapshot) => {
-            const container = document.getElementById('oglasi-lista');
-            container.innerHTML = "";
-            const data = snapshot.val();
-            if (data) {
-                Object.entries(data).forEach(([id, o]) => {
-                    container.innerHTML += `
-                        <div class="card">
-                            <input type="checkbox" class="delete-check" data-id="${id}">
-                            <img src="${o.slike[0]}" onclick="otvoriGalerija(${JSON.stringify(o.slike).replace(/"/g, "'")})">
-                            <h3>${o.naslov}</h3>
-                            <p>ЦЕНА: ${o.cena} €</p>
-                        </div>`;
-                });
-                if (document.getElementById('admin-panel').style.display === "block") {
-                    document.querySelectorAll('.delete-check').forEach(c => c.style.display = "block");
-                }
-            }
+            siteOglasi = snapshot.val() || {};
+            renderirajOglasi(siteOglasi);
         });
     </script>
 </body>
